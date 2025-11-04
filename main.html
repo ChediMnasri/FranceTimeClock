@@ -616,7 +616,7 @@
       detectedTemp = readTemperature();
       const tempText = (typeof detectedTemp === 'number') ? `${detectedTemp}°C` : 'an unknown temperature';
       kaiMessages.innerHTML = '';
-      kaiMessages.innerHTML += `<div class="kai-msg-kai">😺 Meow to you! I am <strong>KAI</strong>, your cute assistant! Meow meow!!!<br>
+      kaiMessages.innerHTML += `<div class="kai-msg-kai">😺 Meow to you! I am <strong>KAI</strong>, your cute assistant! Meow meoww!!!<br>
         I see it's <strong>${tempText}</strong> now huh? Want me to suggest what to wear so you can stay healthy and not feeling neither cold nor hot?</div>`;
       kaiMessages.scrollTop = kaiMessages.scrollHeight;
       kaiInput.focus();
@@ -638,7 +638,7 @@
       if (/^\s*(yes|y|sure|ok|please|yeah)\b/i.test(text)) {
         // respond
         setTimeout(() => {
-          kaiMessages.innerHTML += `<div class="kai-msg-kai">🐾 Meoww!!! Alrighttt! For this particular weather I suggest to wear your <strong>SMILE</strong> 😘</div>`;
+          kaiMessages.innerHTML += `<div class="kai-msg-kai">🐾 Meoww !!! Alrighttt ! For this particular weather... I suggest to wear your beautiul <strong>SMILE</strong> 😘</div>`;
           kaiMessages.scrollTop = kaiMessages.scrollHeight;
           // auto close after 10s
           clearTimeout(autoCloseTimer);
@@ -649,7 +649,7 @@
         }, 800);
       } else {
         setTimeout(() => {
-          kaiMessages.innerHTML += `<div class="kai-msg-kai">😸 Meow? Say "yes" if you want my suggestion!</div>`;
+          kaiMessages.innerHTML += `<div class="kai-msg-kai">😸 Meow?? Say "yes" if you want my suggestion!</div>`;
           kaiMessages.scrollTop = kaiMessages.scrollHeight;
         }, 600);
       }
@@ -662,3 +662,4 @@
 
 </body>
 </html>
+
