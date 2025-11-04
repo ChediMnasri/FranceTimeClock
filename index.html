@@ -101,9 +101,135 @@
       box-shadow: 0 0 12px rgba(0,255,128,0.4);
     }
   </style>
+  <style>
+  /* === ENVELOPE INTRO OVERLAY === */
+  #envelopeOverlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0b0b0b 0%, #050505 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    overflow: hidden;
+    transition: opacity 1.6s ease;
+  }
+
+  .envelope-body {
+    position: relative;
+    width: 75vw;
+    height: 60vh;
+    background: linear-gradient(145deg, #101010, #1b1b1b);
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    box-shadow: 0 0 45px rgba(0,122,255,0.25),
+                inset 0 0 25px rgba(255,255,255,0.05);
+    transform-origin: center top;
+    transition: transform 2s ease-in-out;
+    overflow: hidden;
+  }
+
+  .envelope-flap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 50%;
+    background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+    clip-path: polygon(0 0,100% 0,50% 100%);
+    transform-origin: top;
+    transition: transform 2s ease-in-out;
+  }
+
+  .envelope-body.open .envelope-flap {
+    transform: rotateX(180deg);
+  }
+
+  .envelope-message {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8em;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #f7f7f7;
+    opacity: 0;
+    animation: fadeInText 2s ease forwards 1.2s;
+    padding: 0 40px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 12px rgba(0, 120, 255, 0.45);
+  }
+
+  .envelope-message span {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.5em;
+    color: #7db9ff;
+  }
+
+  @keyframes fadeInText { to { opacity: 1; } }
+
+  #openEnvelopeBtn {
+    margin-top: 60px;
+    background: linear-gradient(90deg, #0078ff, #004fcf);
+    border: none;
+    border-radius: 30px;
+    padding: 14px 46px;
+    font-size: 1.2em;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,120,255,0.4);
+    transition: all 0.3s ease;
+  }
+
+  #openEnvelopeBtn:hover {
+    transform: translateY(-2px) scale(1.05);
+    background: linear-gradient(90deg,#339dff,#0058d6);
+  }
+
+  #envelopeOverlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* === Paragraph typing effect === */
+  .intro-paragraph {
+    overflow: hidden;
+    border-right: 2px solid rgba(255,255,255,0.7);
+    white-space: nowrap;
+    animation: typing 4s steps(60, end), blink 0.9s step-end infinite alternate;
+  }
+
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+</style>
+
 </head>
 
 <body>
+  <div id="envelopeOverlay">
+  <div class="envelope-body" id="envelopeBody">
+    <div class="envelope-flap"></div>
+    <div class="envelope-message">
+      A special gift that took me exactly <br>
+      <span>31 days straight</span><br>
+      to create — just for <span>YOU</span> 💌
+    </div>
+  </div>
+  <button id="openEnvelopeBtn">Open</button>
+</div>
+
   <h1>Hello and Welcome to</h1>
   <div class="title">Shady Timing</div>
 
@@ -130,5 +256,35 @@
       window.location.href = 'connect.html'; // goes to the connection page
     });
   </script>
+  <script>
+  const envelopeBody = document.getElementById('envelopeBody');
+  const envelopeOverlay = document.getElementById('envelopeOverlay');
+  const openEnvelopeBtn = document.getElementById('openEnvelopeBtn');
+  const introParagraph = document.querySelector('p'); // your main paragraph below
+
+  if (introParagraph) {
+    introParagraph.style.opacity = '0';
+  }
+
+  openEnvelopeBtn.addEventListener('click', () => {
+    envelopeBody.classList.add('open');
+
+    // Let flap animation finish before fade out
+    setTimeout(() => {
+      envelopeOverlay.classList.add('fade-out');
+    }, 2200);
+
+    // Wait 4 seconds total after clicking "Open" to start typing
+    setTimeout(() => {
+      if (introParagraph) {
+        introParagraph.classList.add('intro-paragraph');
+        introParagraph.style.opacity = '1';
+      }
+      envelopeOverlay.remove();
+      document.body.style.overflow = 'auto';
+    }, 4000);
+  });
+</script>
+
 </body>
 </html>
