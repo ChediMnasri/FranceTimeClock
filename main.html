@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>France Region Time Finder — Prime Edition</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: radial-gradient(circle at center, #0b0b0b 0%, #050505 100%);
+      color: #eee;
+      font-family: 'Poppins', Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(17, 17, 17, 0.92);
+      border-radius: 22px;
+      padding: 50px;
+      width: 460px;
+      box-shadow: 0 0 35px rgba(0, 122, 255, 0.25),
+                  0 0 90px rgba(255, 255, 255, 0.1) inset;
+      text-align: center;
+      position: relative;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 1s ease forwards;
+      transform: scale(1.05);
+      overflow: visible;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1.05); }
+    }
+
+    .title-france {
+      font-size: 60px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #0055a4 38%, #fff 45%, #fff 62%, #ef4135 69%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 25px;
+      animation: glowPulse 3s infinite ease-in-out;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+      50% { text-shadow: 0 0 20px rgba(0,122,255,0.6); }
+    }
+
+    p {
+      color: #ccc;
+      margin: 0 0 22px;
+      font-size: 15px;
+    }
+
+    .input-container {
+      position: relative;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    input[list], input {
+      width: calc(100% - 20px);
+      padding: 12px 36px 12px 12px;
+      border-radius: 10px;
+      border: 1px solid #1c1c1c;
+      background: rgba(12, 12, 12, 0.95);
+      color: #fff;
+      outline: none;
+      font-size: 16px;
+      transition: box-shadow 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    input:focus { box-shadow: 0 0 8px #0078ff; }
+
+    #clearBtn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+      transition: color 0.2s ease, transform 0.15s ease;
+      padding: 6px;
+      border-radius: 8px;
+    }
+
+    #clearBtn:hover {
+      color: #ff5f5f;
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.02);
+    }
+
+    #startBtn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 14px;
+      border-radius: 10px;
+      background: linear-gradient(90deg,#0078ff,#004fcf);
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #startBtn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg,#339dff,#0058d6);
+      box-shadow: 0 0 14px rgba(0,120,255,0.5);
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      animation: fadeIn 0.8s ease;
+      display: block;
+    }
+
+    .time-zone {
+      font-size: 14px;
+      color: #888;
+      margin-left: 6px;
+    }
+
+    #date {
+      margin-top: 8px;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg,#0078ff30,#004fcf30);
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,120,255,0.25);
+    }
+
+    #weather {
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 17px;
+      vertical-align: middle;
+    }
+
+    .spinner {
+      display:inline-block;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,0.12);
+      border-top-color: rgba(255,255,255,0.8);
+      animation: spin .8s linear infinite;
+      vertical-align:middle;
+      margin-right:6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(0,122,255,0.6);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: float 6s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); opacity: 0.5; }
+      50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.5; }
+    }
+
+    @media (max-width:480px){
+      .card { width: 92%; padding: 30px; }
+      .title-france { font-size: 50px; margin-bottom: 18px; }
+      #result { font-size: 24px; }
+      #date, #weather { font-size: 15px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card" role="region" aria-labelledby="pageTitle">
+    <h1 id="pageTitle" class="title-france">FRANCE</h1>
+    <p>Select a region and watch time flow like light through glass ⏳</p>
+
+    <div class="input-container">
+      <input list="regions" id="region"
+        placeholder="Type or pick a region (e.g. Bretagne / Provence / Île-de-France...)"
+        autocomplete="off" aria-label="Region name" />
+      <button id="clearBtn" title="Clear selection" aria-label="Clear selection">✕</button>
+    </div>
+
+    <datalist id="regions">
+      <option value="Auvergne-Rhône-Alpes">
+      <option value="Bourgogne-Franche-Comté">
+      <option value="Brittany (Bretagne)">
+      <option value="Centre-Val de Loire">
+      <option value="Corsica (Corse)">
+      <option value="Grand Est">
+      <option value="Hauts-de-France">
+      <option value="Île-de-France">
+      <option value="Normandy (Normandie)">
+      <option value="Nouvelle-Aquitaine">
+      <option value="Occitanie">
+      <option value="Pays de la Loire">
+      <option value="Provence-Alpes-Côte d’Azur">
+    </datalist>
+
+    <button id="startBtn" type="button">Get Time</button>
+
+    <div id="result">--:--:--:--- <span class="time-zone">CET</span></div>
+    <div id="date"></div>
+    <div id="weather"></div>
+  </div>
+
+  <script>
+  (function(){
+    const regionInput = document.getElementById('region');
+    const resultEl = document.getElementById('result');
+    const startBtn = document.getElementById('startBtn');
+    const dateEl = document.getElementById('date');
+    const clearBtn = document.getElementById('clearBtn');
+    const weatherEl = document.getElementById('weather');
+    const TARGET_TIMEZONE = 'Europe/Paris';
+    let clockHandle = null;
+
+    const regionCoords = {
+      "Île-de-France": [48.8566, 2.3522],
+      "Provence-Alpes-Côte d’Azur": [43.9352, 6.0679],
+      "Brittany (Bretagne)": [48.2020, -2.9326],
+      "Normandy (Normandie)": [49.1829, -0.3707],
+      "Occitanie": [43.6047, 1.4442],
+      "Nouvelle-Aquitaine": [44.8378, -0.5792],
+      "Pays de la Loire": [47.2184, -1.5536],
+      "Grand Est": [48.5734, 7.7521],
+      "Auvergne-Rhône-Alpes": [45.7640, 4.8357],
+      "Bourgogne-Franche-Comté": [47.2805, 4.9994],
+      "Centre-Val de Loire": [47.9029, 1.9093],
+      "Corsica (Corse)": [42.0396, 9.0129],
+      "Hauts-de-France": [50.6292, 3.0573]
+    };
+
+    const aliases = {
+      'bretagne': 'Brittany (Bretagne)',
+      'brittany': 'Brittany (Bretagne)',
+      'corse': 'Corsica (Corse)',
+      'corsica': 'Corsica (Corse)',
+      'ile-de-france': 'Île-de-France',
+      'ile de france': 'Île-de-France',
+      'paca': 'Provence-Alpes-Côte d’Azur',
+      'provence': 'Provence-Alpes-Côte d’Azur',
+      'hauts-de-france': 'Hauts-de-France',
+      'normandie': 'Normandy (Normandie)',
+      'nouvelle aquitaine': 'Nouvelle-Aquitaine',
+      'auvergne rhone alpes': 'Auvergne-Rhône-Alpes',
+      'centre val de loire': 'Centre-Val de Loire',
+      'pays de la loire': 'Pays de la Loire',
+      'grand est': 'Grand Est',
+      'bourgogne franche comte': 'Bourgogne-Franche-Comté'
+    };
+
+    function normalizeKey(s){
+      if(!s) return '';
+      return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+              .replace(/[\u2018\u2019\u201C\u201D]/g, "'")
+              .replace(/[^\w\s-]/g,'')
+              .trim().toLowerCase().replace(/\s+/g,' ');
+    }
+
+    function findCanonicalRegion(input){
+      const n = normalizeKey(input);
+      if(!n) return null;
+      if(aliases[n]) return aliases[n];
+      for(const key of Object.keys(regionCoords))
+        if(normalizeKey(key) === n) return key;
+      for(const key of Object.keys(regionCoords)){
+        const nk = normalizeKey(key);
+        if(nk.includes(n) || n.includes(nk)) return key;
+      }
+      return null;
+    }
+
+    function getTimePartsAndZone(timezone){
+      const now = new Date();
+      const fmt = new Intl.DateTimeFormat('en-GB',{timeZone:timezone,hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const parts = fmt.formatToParts(now);
+      const obj={};
+      for(const p of parts){if(p.type==='hour')obj.hour=p.value;if(p.type==='minute')obj.minute=p.value;if(p.type==='second')obj.second=p.value;}
+      const ms=String(now.getMilliseconds()).padStart(3,'0');
+      const tzName=new Intl.DateTimeFormat('en-GB',{timeZone:timezone,timeZoneName:'short'}).formatToParts(now).find(x=>x.type==='timeZoneName')?.value||timezone;
+      return {parts:obj,ms,tzName};
+    }
+
+    function formatDateForTimezone(timezone){
+      const now=new Date();
+      return new Intl.DateTimeFormat('en-GB',{timeZone:timezone,day:'numeric',month:'long',year:'numeric'}).format(now);
+    }
+
+    async function getWeather(lat, lon){
+      weatherEl.textContent='';
+      const spin=document.createElement('span');spin.className='spinner';weatherEl.appendChild(spin);
+      try{
+        const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        if(!res.ok)throw new Error();
+        const data=await res.json();
+        const temp=data.current_weather.temperature;
+        let color=temp>25?'salmon':temp<10?'skyblue':'limegreen';
+        weatherEl.style.color=color;
+        weatherEl.innerHTML=`🌡️ ${temp.toFixed(1)}°C`;
+      }catch(e){
+        weatherEl.style.color='#ccc';
+        weatherEl.textContent='Weather unavailable';
+      }
+    }
+
+    function startClockForRegion(canonicalKey){
+      if(clockHandle) clearInterval(clockHandle);
+      if(!canonicalKey){
+        resultEl.innerHTML='--:--:--:--- <span class="time-zone">CET</span>';
+        dateEl.textContent='';
+        weatherEl.textContent='';
+        clearBtn.style.display='none';
+        return;
+      }
+      clearBtn.style.display='block';
+      const [lat,lon]=regionCoords[canonicalKey];
+      getWeather(lat,lon);
+
+      function tick(){
+        const {parts,ms,tzName}=getTimePartsAndZone(TARGET_TIMEZONE);
+        resultEl.innerHTML=`${parts.hour}:${parts.minute}:${parts.second}:${ms} <span class="time-zone">${tzName}</span>`;
+        dateEl.textContent=formatDateForTimezone(TARGET_TIMEZONE);
+      }
+
+      tick();
+      const align=100-(Date.now()%100);
+      setTimeout(()=>{tick();clockHandle=setInterval(tick,100);},align);
+    }
+
+    startBtn.addEventListener('click',()=>{
+      const region=regionInput.value.trim();
+      const canonical=findCanonicalRegion(region);
+      if(!canonical){
+        resultEl.innerHTML='--:--:--:--- <span class="time-zone">—</span>';
+        dateEl.textContent='';
+        weatherEl.textContent='';
+        regionInput.animate([{boxShadow:'0 0 0 rgba(0,0,0,0)'},{boxShadow:'0 0 10px rgba(255,80,80,0.2)'}],{duration:360,fill:'forwards'});
+        return;
+      }
+      startClockForRegion(canonical);
+    });
+
+    clearBtn.addEventListener('click',()=>{
+      regionInput.value='';
+      startClockForRegion(null);
+    });
+
+    regionInput.addEventListener('input',()=>{
+      const canonical=findCanonicalRegion(regionInput.value.trim());
+      clearBtn.style.display=canonical?'block':'none';
+    });
+
+    regionInput.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();startBtn.click();}});
+
+    startClockForRegion(null);
+
+    for(let i=0;i<25;i++){
+      const p=document.createElement('div');
+      p.classList.add('particle');
+      p.style.left=Math.random()*110-5+'vw';
+      p.style.top=Math.random()*110-5+'vh';
+      p.style.animationDelay=(Math.random()*6)+'s';
+      p.style.opacity=(0.35+Math.random()*0.7);
+      document.body.appendChild(p);
+    }
+  })();
+  </script>
+</body>
+</html>

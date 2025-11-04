@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect — Shady Timing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: radial-gradient(circle at center, #0b0b0b 0%, #050505 100%);
+      color: #eee;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: rgba(17,17,17,0.9);
+      padding: 40px 50px;
+      border-radius: 20px;
+      box-shadow: 0 0 35px rgba(0,122,255,0.25),
+                  0 0 90px rgba(255,255,255,0.1) inset;
+      backdrop-filter: blur(8px);
+      width: 360px;
+      animation: fadeIn 1s ease forwards;
+      transform: scale(1.03);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    input {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #1c1c1c;
+      background: rgba(12,12,12,0.95);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input:focus {
+      box-shadow: 0 0 8px #0078ff;
+    }
+
+    .connect-btn {
+      margin-top: 14px;
+      background: linear-gradient(90deg,#0078ff,#004fcf);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .connect-btn:hover {
+      background: #00cc66;
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(0,255,128,0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1.03); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="input-group">
+      <label for="firstName">Your Name</label>
+      <input id="firstName" type="text" placeholder="Something like (e.g. Samar)">
+    </div>
+
+    <div class="input-group">
+      <label for="lastName">Last Name</label>
+      <input id="lastName" type="text" placeholder="Something like your own last name">
+    </div>
+
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="Whatever you type is the password">
+    </div>
+
+    <button class="connect-btn" id="connectBtn">Connect</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('connectBtn');
+    btn.addEventListener('click', () => {
+      const name = document.getElementById('firstName').value.trim();
+      if (!name) {
+        alert("Please at least tell us your glorious name 👀");
+        return;
+      }
+      // Move to main page
+      window.location.href = 'main.html';
+    });
+  </script>
+</body>
+</html>

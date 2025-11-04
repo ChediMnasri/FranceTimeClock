@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome — Shady Timing</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+  
+  <style>
+    body {
+      background: radial-gradient(circle at center, #0b0b0b 0%, #050505 100%);
+      color: #eee;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Header */
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 72px;
+      letter-spacing: 4px;
+      margin: 0;
+      position: relative;
+      text-align: center;
+      top: -80px; /* moved higher */
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255,255,255,0.4);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* Floating animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(-4px); }
+      50% { transform: translateY(4px); }
+    }
+
+    /* Shady Timing title */
+.title {
+  margin-top: -20px;
+  font-size: 78px;
+  text-transform: none;
+  letter-spacing: 2px;
+  font-family: 'Pacifico', cursive;
+  animation: colorCycle 10s infinite linear;
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.3),
+    0 0 30px rgba(0,255,255,0.2);
+}
+
+
+    @keyframes colorCycle {
+      0% { color: #ff3333; text-shadow: 0 0 15px #ff3333; }
+      25% { color: #ffcc33; text-shadow: 0 0 15px #ffcc33; }
+      50% { color: #33ff99; text-shadow: 0 0 15px #33ff99; }
+      75% { color: #339dff; text-shadow: 0 0 15px #339dff; }
+      100% { color: #ff3333; text-shadow: 0 0 15px #ff3333; }
+    }
+
+    /* Typing paragraph */
+    .paragraph {
+      max-width: 650px;
+      text-align: center;
+      margin-top: 60px;
+      font-size: 18px;
+      color: #ccc;
+      line-height: 1.6;
+      min-height: 100px;
+      letter-spacing: 0.5px;
+      white-space: pre-wrap;
+      font-family: 'Comic Neue', cursive;
+    }
+
+    /* Next button */
+    .next-btn {
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      background: transparent;
+      color: #fff;
+      border: 2px solid #0078ff;
+      padding: 10px 26px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .next-btn:hover {
+      background: #00cc66;
+      border-color: #00cc66;
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(0,255,128,0.4);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Hello and Welcome to</h1>
+  <div class="title">Shady Timing</div>
+
+  <div class="paragraph" id="typing"></div>
+
+  <button class="next-btn" id="nextBtn">Next ➜</button>
+
+  <script>
+    const text = `This website will help you to figure out the timing of each region in FRANCE alongside the weather and date — in case you get bored using ancient human tools like "IPHONE".`;
+    const paragraph = document.getElementById('typing');
+    let i = 0;
+
+    function typeWriter() {
+      if (i < text.length) {
+        paragraph.textContent += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 50);
+      }
+    }
+
+    setTimeout(typeWriter, 1500);
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      window.location.href = 'connect.html'; // goes to the connection page
+    });
+  </script>
+</body>
+</html>
