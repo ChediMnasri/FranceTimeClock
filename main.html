@@ -396,5 +396,269 @@
     }
   })();
   </script>
+  <!-- === KAI Assistant — Updated Final Version === -->
+<style>
+  .kai-cat {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    background: url('https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f408.png') no-repeat center/contain;
+    cursor: pointer;
+    display: none;
+    z-index: 9999;
+    animation: floaty 3s ease-in-out infinite;
+  }
+
+  .kai-cloud {
+    position: fixed;
+    bottom: 100px;
+    right: 92px;
+    background: rgba(250,250,250,0.95);
+    color: #222;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-family: "Comic Neue", cursive, sans-serif;
+    font-size: 13px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.28);
+    display: none;
+    animation: kai-pop .45s cubic-bezier(.2,.9,.3,1);
+    z-index: 9998;
+  }
+  @keyframes kai-pop { from { transform: scale(.8) translateY(8px); opacity:0 } to { transform:scale(1) translateY(0); opacity:1 } }
+
+  .kai-chat {
+    position: fixed;
+    bottom: 128px;
+    right: 28px;
+    width: 300px;
+    max-width: calc(100vw - 56px);
+    background: rgba(18,18,24,0.96);
+    border-radius: 14px;
+    box-shadow: 0 8px 36px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: none;
+    font-family: "Comic Neue", cursive, sans-serif;
+    z-index: 10000;
+    color: #eaeaea;
+    backdrop-filter: blur(6px);
+  }
+
+  .kai-header {
+    background: #702963; /* Byzantium */
+    color: #fff;
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kai-messages {
+    padding: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .kai-msg-user {
+    text-align: right;
+    color: #bfe8d4;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+
+  .kai-msg-kai {
+    text-align: left;
+    color: #f3eaf6;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .kai-input {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+  }
+
+  .kai-input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #ddd;
+    padding: 8px 10px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .kai-input input::placeholder { color: #999; }
+
+  .kai-input button {
+    background: #702963; /* Byzantium */
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .kai-input button:hover { background: #8a2c72; }
+
+  /* small responsive tweak */
+  @media (max-width:420px) {
+    .kai-chat { right: 12px; left: 12px; width: auto; bottom: 110px; }
+  }
+</style>
+
+<div class="kai-cat" id="kaiCat" title="KAI — click me"></div>
+<div class="kai-cloud" id="kaiCloud">Click me ! Click me ! Meow meowwwww !!!!!</div>
+
+<div class="kai-chat" id="kaiChat" role="dialog" aria-label="KAI assistant">
+  <div class="kai-header">🐾 KAI — Cute Assistant</div>
+  <div class="kai-messages" id="kaiMessages" aria-live="polite"></div>
+  <div class="kai-input">
+    <input id="kaiInput" placeholder="Type yes to accept..." />
+    <button id="kaiSend">Send</button>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const kaiCat = document.getElementById('kaiCat');
+    const kaiCloud = document.getElementById('kaiCloud');
+    const kaiChat = document.getElementById('kaiChat');
+    const kaiMessages = document.getElementById('kaiMessages');
+    const kaiInput = document.getElementById('kaiInput');
+    const kaiSend = document.getElementById('kaiSend');
+    const weatherEl = document.getElementById('weather'); // your weather element
+    const startBtn = document.getElementById('startBtn');
+
+    let detectedTemp = null;
+    let showTimeout = null;
+    let autoCloseTimer = null;
+
+    // Utility: extract numeric temp from either window.lastWeather or weather element text
+    function readTemperature() {
+      if (typeof window.lastWeather === 'number') return window.lastWeather;
+      if (weatherEl) {
+        const txt = weatherEl.textContent || '';
+        const m = txt.match(/(-?\d+(\.\d+)?)\s*°?C/);
+        if (m) return parseFloat(m[1]);
+      }
+      return null;
+    }
+
+    // Show KAI after successful region selection & weather detection.
+    // Waits for a temp to be available, then shows cat+cloud after 4s.
+    function waitForWeatherAndShow() {
+      // clear previous
+      clearTimeout(showTimeout);
+      detectedTemp = null;
+      kaiCat.style.display = 'none';
+      kaiCloud.style.display = 'none';
+      kaiChat.style.display = 'none';
+
+      // poll for weather up to ~8 seconds
+      const start = Date.now();
+      const poll = () => {
+        const t = readTemperature();
+        if (typeof t === 'number') {
+          detectedTemp = t;
+          // show after exact 4s delay from detection
+          showTimeout = setTimeout(() => {
+            kaiCat.style.display = 'block';
+            kaiCloud.style.display = 'block';
+            // accessible focus hint
+            kaiCat.setAttribute('aria-hidden','false');
+          }, 4000);
+          return;
+        }
+        if (Date.now() - start < 8000) {
+          setTimeout(poll, 400);
+        } else {
+          // if no temp detected, still allow KAI to show after 4s with unknown temp
+          showTimeout = setTimeout(() => {
+            kaiCat.style.display = 'block';
+            kaiCloud.style.display = 'block';
+          }, 4000);
+        }
+      };
+      poll();
+    }
+
+    // Hook Get Time (startBtn) to trigger KAI flow.
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        // give the page a short time to start weather fetch; begin polling
+        // clear any existing timers
+        clearTimeout(showTimeout);
+        clearTimeout(autoCloseTimer);
+        kaiChat.style.display = 'none';
+        kaiCloud.style.display = 'none';
+        kaiCat.style.display = 'none';
+        // start waiting for weather
+        setTimeout(waitForWeatherAndShow, 400); // slight delay to allow fetch to start
+      });
+    }
+
+    // Click cat -> show chat with a greeting using real temperature if available
+    kaiCat.addEventListener('click', () => {
+      kaiCloud.style.display = 'none';
+      kaiCat.style.display = 'block';
+      kaiChat.style.display = 'block';
+      // read latest temp when opening
+      detectedTemp = readTemperature();
+      const tempText = (typeof detectedTemp === 'number') ? `${detectedTemp}°C` : 'an unknown temperature';
+      kaiMessages.innerHTML = '';
+      kaiMessages.innerHTML += `<div class="kai-msg-kai">😺 Meow to you! I am <strong>KAI</strong>, your cute assistant! Meow meow!!!<br>
+        I see it's <strong>${tempText}</strong> now huh? Want me to suggest what to wear so you can stay healthy and not feeling neither cold nor hot?</div>`;
+      kaiMessages.scrollTop = kaiMessages.scrollHeight;
+      kaiInput.focus();
+    });
+
+    // Send handler
+    kaiSend.addEventListener('click', handleSend);
+    kaiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSend(); });
+
+    function handleSend(){
+      const raw = kaiInput.value.trim();
+      if (!raw) return;
+      const text = raw;
+      kaiMessages.innerHTML += `<div class="kai-msg-user">${escapeHtml(text)}</div>`;
+      kaiInput.value = '';
+      kaiMessages.scrollTop = kaiMessages.scrollHeight;
+
+      // simple acceptance detection
+      if (/^\s*(yes|y|sure|ok|please|yeah)\b/i.test(text)) {
+        // respond
+        setTimeout(() => {
+          kaiMessages.innerHTML += `<div class="kai-msg-kai">🐾 Meoww!!! Alrighttt! For this particular weather I suggest to wear your <strong>SMILE</strong> 😘</div>`;
+          kaiMessages.scrollTop = kaiMessages.scrollHeight;
+          // auto close after 10s
+          clearTimeout(autoCloseTimer);
+          autoCloseTimer = setTimeout(() => {
+            kaiChat.style.display = 'none';
+            kaiCat.style.display = 'none';
+          }, 10000);
+        }, 800);
+      } else {
+        setTimeout(() => {
+          kaiMessages.innerHTML += `<div class="kai-msg-kai">😸 Meow? Say "yes" if you want my suggestion!</div>`;
+          kaiMessages.scrollTop = kaiMessages.scrollHeight;
+        }, 600);
+      }
+    }
+
+    // small helper
+    function escapeHtml(s){ return s.replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  })();
+</script>
+
 </body>
 </html>
